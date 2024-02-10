@@ -1,11 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
-// import ScrollScene from '@component/scroll_test';
-import ScrollScene from './component/scroll_test';
+import CelebrationMain from './components/celebration/celebration_main.component.tsx';
+
 
 function App() {
   return (
-    <ScrollScene/>
+    <div>
+      <CelebrationMain />
+    </div>
   );
 }
 
