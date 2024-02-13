@@ -1,23 +1,20 @@
 import React, { FC, useEffect, useState } from "react";
-import useWindowSize from "react-use/lib/useWindowSize";
 import styled from "styled-components";
 import { OpenBook } from "@components/common/svgs.component";
-import ConfettiComponent from "@components/common/confetti.component";
 import { capitalizeSentence } from "@components/common/utils";
 import "@components/common/styles.css";
 
 interface CelebrationTextProps {
   className?: string;
-  celebrationText: string[];
+  message: string;
   customerName: string;
 }
 
-const CelebrationText: FC<CelebrationTextProps> = ({ 
+const CelebrationText: FC<CelebrationTextProps> = ({
   className,
-  celebrationText,
+  message,
   customerName,
- }) => {
-  const { width: screenWidth, height: screenHeight } = useWindowSize();
+}) => {
   const [bookSize, setBookSize] = useState<number>(0);
 
   useEffect(() => {
@@ -38,25 +35,15 @@ const CelebrationText: FC<CelebrationTextProps> = ({
 
   return (
     <div className={className}>
-      <div id='confetti-container'>
-        <ConfettiComponent />
-      </div>
-      <div
-        className="container"
-        style={{ width: `${screenWidth}px`, height: `${screenHeight}px` }}
-      >
+      <div className="container">
         <div className="svg-wrapper">
           <OpenBook width={`${bookSize}%`} height={`${bookSize}%`} />
         </div>
-        {bookSize >= 100 &&
-          celebrationText.map((t, i) => (
-            <div
-              className="text-wrapper great-vibe-font"
-              key={`book-text-${i}`}
-            >
-              {capitalizeSentence(t)}
-            </div>
-          ))}
+        {bookSize >= 100 && (
+          <div className="text-wrapper great-vibe-font">
+            {capitalizeSentence(message)}
+          </div>
+        )}
         {bookSize >= 100 && (
           <div className="text-wrapper protest-riot-font text-right">
             {`- ${capitalizeSentence(customerName)}`}
@@ -89,6 +76,8 @@ export default styled(CelebrationText)`
 
   .container {
     background: linear-gradient(to bottom right, #ff7e5f, #feb47b); /* orange */
+    width: 100vw;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -99,9 +88,9 @@ export default styled(CelebrationText)`
     width: 35%;
     height: auto;
     color: #ff8763; /* orange */
-    font-size: 60px;
-    text-align: center;
+    overflow-wrap: break-word;
     z-index: 2;
+    font-size: 4vw; 
   }
 
   .text-right {

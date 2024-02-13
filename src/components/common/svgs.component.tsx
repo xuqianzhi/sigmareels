@@ -1,11 +1,17 @@
 import React, { FC } from "react";
+import { ThemeColor } from "@components/common/constants";
 
 interface SvgProps {
   width: string;
   height: string;
+  startColor?: string;
+  stopColor?: string;
 }
 
-export const OpenBook: FC<SvgProps> = ({ width, height }) => {
+export const OpenBook: FC<SvgProps> = ({ width, height, startColor, stopColor }) => {
+  const color1 = startColor ? startColor : ThemeColor.BLUE_START;
+  const color2 = stopColor ? stopColor : ThemeColor.BLUE_END;
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -28,8 +34,8 @@ export const OpenBook: FC<SvgProps> = ({ width, height }) => {
           gradientUnits="userSpaceOnUse"
         >
           {/* Blue */}
-          <stop stopColor="#B8DBFC"></stop>
-          <stop offset="1" stopColor="#F8FBFE"></stop>
+          <stop stopColor={color1}></stop>
+          <stop offset="1" stopColor={color2}></stop>
         </linearGradient>
       </defs>
     </svg>

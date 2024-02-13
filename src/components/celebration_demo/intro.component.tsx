@@ -1,9 +1,9 @@
 import React, { FC } from "react";
-import useWindowSize from "react-use/lib/useWindowSize";
 import styled from "styled-components";
 import { Heart } from "@components/common/svgs.component";
 import { capitalizeSentence } from "@components/common/utils";
 import "@components/common/styles.css";
+import { useWindowSize } from "react-use";
 
 interface IntroProps {
   className?: string;
@@ -20,15 +20,12 @@ const Intro: FC<IntroProps> = ({
   occasion,
   relationship,
 }) => {
-  const { width: screenWidth, height: screenHeight } = useWindowSize();
-  const svgSize = 200;
+  const { width: windowWidth } = useWindowSize();
+  const svgSize = windowWidth * 0.12;
   const svgClass = "heartbeat";
   return (
     <div className={className}>
-      <div
-        className="container"
-        style={{ width: `${screenWidth}px`, height: `${screenHeight}px` }}
-      >
+      <div className="container">
         <div className="text-and-svg-wrapper">
           <div className={svgClass}>
             <Heart width={`${svgSize}`} height={`${svgSize}`} />
@@ -40,11 +37,11 @@ const Intro: FC<IntroProps> = ({
                 {capitalizeSentence(recipientName)}!
               </span>
             </span>
-            <div className="great-vibe-font" style={{ fontSize: "80px" }}>
+            <div className="great-vibe-font">
               Happy {capitalizeSentence(occasion)}!
             </div>
             <div>At This Special Occasion</div>
-            <span style={{ fontSize: "70px" }}>
+            <span>
               <span>Your Dear {capitalizeSentence(relationship)} </span>
               <span className="great-vibe-font">
                 {capitalizeSentence(customerName)}
@@ -79,6 +76,8 @@ export default styled(Intro)`
 
   .container {
     background: linear-gradient(to bottom right, #b8dbfc, #f8fbfe); /* blue */
+    width: 100vw;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -89,10 +88,11 @@ export default styled(Intro)`
     width: 65%;
     height: auto;
     color: #ff8763; /* orange */
-    font-size: 60px;
     text-align: center;
     font-family: Roboto Slab, serif;
     z-index: 2;
+    font-size: 5vw;
+    white-space: nowrap;
   }
 
   .text-right {

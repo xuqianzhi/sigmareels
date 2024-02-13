@@ -1,9 +1,9 @@
-import React, { FC, useEffect, useState } from "react";
-import useWindowSize from "react-use/lib/useWindowSize";
+import React, { FC, useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { PlayButton } from "@components/common/svgs.component";
 import { capitalizeSentence } from "@components/common/utils";
 import "@components/common/styles.css";
+import { useWindowSize } from "react-use";
 
 interface VideoIntroProps {
   className?: string;
@@ -11,9 +11,9 @@ interface VideoIntroProps {
 }
 
 const VideoIntro: FC<VideoIntroProps> = ({ className, customerName }) => {
-  const { width: screenWidth, height: screenHeight } = useWindowSize();
   const [svgClass, setSvgClass] = useState<string>("spin");
-  const svgSize = 200;
+  const { width: windowWidth } = useWindowSize();
+  const svgSize = windowWidth * 0.12;
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -29,7 +29,6 @@ const VideoIntro: FC<VideoIntroProps> = ({ className, customerName }) => {
     <div className={className}>
       <div
         className="container"
-        style={{ width: `${screenWidth}px`, height: `${screenHeight}px` }}
       >
         <div className="text-and-svg-wrapper">
           <div className={svgClass}>
@@ -38,16 +37,16 @@ const VideoIntro: FC<VideoIntroProps> = ({ className, customerName }) => {
           <div className="text-wrapper">
             {/* Ta-da! Alongside this postcard, we've cooked up a playful video just for you. Get ready to grin from ear to ear as you dive into the celebration! */}
             <div>Wait!</div>
-            <div style={{ fontSize: "45px" }}>Think That's It?</div>
-            <div style={{ fontSize: "70px" }}>No No No~</div>
-            <span style={{ fontSize: "50px" }}>
-              <span className="great-vibe-font" style={{ fontSize: "70px" }}>{capitalizeSentence(customerName)} </span>
+            <div style={{ fontSize: "3vw" }}>Think That's It?</div>
+            <div>No No No~</div>
+            <span style={{ fontSize: "3vw" }}>
+              <span className="great-vibe-font" style={{ fontSize: "4vw" }}>{capitalizeSentence(customerName)} </span>
               <span>Cooked it Up into a</span>
             </span>
-            <div>Unique Video</div>
-            <div style={{ fontSize: "75px" }}>Just for You!</div>
-            <div style={{ fontSize: "75px" }}>👇 👇 👇</div>
-            <div style={{ fontSize: "80px" }}>Enjoy the Show!</div>
+            <div style={{ fontSize: "4vw" }}>Unique Video</div>
+            <div>Just for You!</div>
+            <div style={{ fontSize: "4vw" }}>👇 👇 👇</div>
+            <div>Enjoy the Show!</div>
           </div>
           <div className={svgClass}>
             <PlayButton width={`${svgSize}`} height={`${svgSize}`} />
@@ -76,6 +75,8 @@ export default styled(VideoIntro)`
 
   .container {
     background: linear-gradient(to bottom right, #b8dbfc, #f8fbfe); /* blue */
+    width: 100vw;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -86,10 +87,10 @@ export default styled(VideoIntro)`
     width: 65%;
     height: auto;
     color: #ff8763; /* orange */
-    font-size: 60px;
     text-align: center;
     font-family: Roboto Slab, serif;
     z-index: 2;
+    font-size: 5vw; 
   }
 
   .text-right {

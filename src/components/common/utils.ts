@@ -1,3 +1,5 @@
+import { createTheme, Theme } from '@mui/material/styles';
+
 export function capitalizeSentence(sentence: string): string {
   const minorWords: Set<string> = new Set([
     "a",
@@ -61,3 +63,20 @@ export function capitalizeSentence(sentence: string): string {
 
   return words.join(" ");
 }
+
+export const createMuiColorTheme = (
+  primaryColor: string,
+  secondaryColor?: string
+): Theme => {
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: primaryColor
+      },
+      secondary: {
+        main: secondaryColor,
+      },
+    },
+  });
+  return theme
+};
