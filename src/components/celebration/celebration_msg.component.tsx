@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { OpenBook } from "@components/common/svgs.component";
 import { capitalizeSentence } from "@components/common/utils";
 import "@components/common/styles.css";
+import { ThemeColor } from "@components/common/constants";
 
 interface CelebrationTextProps {
   className?: string;
@@ -66,16 +67,8 @@ export default styled(CelebrationText)`
     z-index: 1;
   }
 
-  .great-vibe-font {
-    font-family: great-vibe;
-  }
-
-  .protest-riot-font {
-    font-family: protest-riot;
-  }
-
   .container {
-    background: linear-gradient(to bottom right, #ff7e5f, #feb47b); /* orange */
+    background: linear-gradient(to bottom right, ${ThemeColor.ORANGE}, ${ThemeColor.ORANGE_END});
     width: 100vw;
     height: 100vh;
     display: flex;

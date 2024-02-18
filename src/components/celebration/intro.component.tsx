@@ -4,6 +4,7 @@ import { Heart } from "@components/common/svgs.component";
 import { capitalizeSentence } from "@components/common/utils";
 import "@components/common/styles.css";
 import { useWindowSize } from "react-use";
+import { ThemeColor } from "@components/common/constants";
 
 interface IntroProps {
   className?: string;
@@ -59,10 +60,6 @@ const Intro: FC<IntroProps> = ({
 };
 
 export default styled(Intro)`
-  .great-vibe-font {
-    font-family: great-vibe;
-  }
-
   .text-and-svg-wrapper {
     position: absolute;
     width: 100%;
@@ -75,7 +72,7 @@ export default styled(Intro)`
   }
 
   .container {
-    background: linear-gradient(to bottom right, #b8dbfc, #f8fbfe); /* blue */
+    background: linear-gradient(to bottom right, #${ThemeColor.CREAM}, #${ThemeColor.CREAM_END});
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -87,7 +84,7 @@ export default styled(Intro)`
   .text-wrapper {
     width: 65%;
     height: auto;
-    color: #ff8763; /* orange */
+    color: ${ThemeColor.ORANGE};
     text-align: center;
     font-family: Roboto Slab, serif;
     z-index: 2;

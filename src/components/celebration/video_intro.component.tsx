@@ -4,6 +4,7 @@ import { PlayButton } from "@components/common/svgs.component";
 import { capitalizeSentence } from "@components/common/utils";
 import "@components/common/styles.css";
 import { useWindowSize } from "react-use";
+import { ThemeColor } from "@components/common/constants";
 
 interface VideoIntroProps {
   className?: string;
@@ -58,10 +59,6 @@ const VideoIntro: FC<VideoIntroProps> = ({ className, customerName }) => {
 };
 
 export default styled(VideoIntro)`
-  .great-vibe-font {
-    font-family: great-vibe;
-  }
-
   .text-and-svg-wrapper {
     position: absolute;
     width: 100%;
@@ -74,7 +71,7 @@ export default styled(VideoIntro)`
   }
 
   .container {
-    background: linear-gradient(to bottom right, #b8dbfc, #f8fbfe); /* blue */
+    background: linear-gradient(to bottom right, #${ThemeColor.CREAM}, #${ThemeColor.CREAM_END});
     width: 100vw;
     height: 100vh;
     display: flex;

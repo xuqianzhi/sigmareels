@@ -14,15 +14,22 @@ import CircularProgress from "@mui/material/CircularProgress";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import Typography from "@mui/material/Typography";
-import CelebrationDemo from "@components/celebration_demo/celebration_demo.component";
-import { writeOrderDoc } from "@components/form/firestore";
+import CelebrationMain from "@components/celebration/celebration_main.component";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Link from "@mui/material/Link";
 
+import {
+  writeCustomizationDoc,
+  verifyRedeemIdExist,
+} from "@common/firestore";
 
 interface FormProps {
   className?: string;
 }
 
-const CHAR_LIMIT = 100;
+const FIELD_CHAR_LIMIT = 40;
+const MSG_CHAR_LIMIT = 100;
+const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const Form: FC<FormProps> = ({ className }) => {
   const [helpIconClassIndex, setHelpIconClassIndex] = useState<number>(0);
@@ -34,16 +41,6 @@ const Form: FC<FormProps> = ({ className }) => {
       }
     </Typography>
   );
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setHelpIconClassIndex((prev) => (prev + 1) % helpIconClasses.length);
-    }, 1000);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
 
   const [orderId, setOrderId] = useState<string>("");
   const [orderIdError, setOrderIdError] = useState<boolean>(false);
@@ -71,12 +68,41 @@ const Form: FC<FormProps> = ({ className }) => {
   const [relationship, setRelationship] = useState<string>("");
   const [relationshipError, setRelationshipError] = useState<boolean>(false);
 
+  const [redeemId, setRedeemId] = useState<string>("");
+  const [redeemIdError, setRedeemIdError] = useState<boolean>(false);
+  const [redeemIdExistError, setRedeemIdExistError] = useState<boolean>(false);
+
   const [message, setMessage] = useState<string>("");
   const [messageError, setMessageError] = useState<boolean>(false);
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [submissionError, setSubmissionError] = useState<boolean | null>(null);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [isPreviewing, setIsPreviewing] = useState<boolean>(false);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setHelpIconClassIndex((prev) => (prev + 1) % helpIconClasses.length);
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  useEffect(() => {
+    const validateRedeemId = async () => {
+      if (orderId && redeemId) {
+        const redeemIdExistResponse = await verifyRedeemIdExist(
+          redeemId,
+          orderId
+        );
+        if (!redeemIdExistResponse.error) {
+          setRedeemIdExistError(redeemIdExistResponse.data);
+        }
+      }
+    };
+    validateRedeemId();
+  }, [redeemId, orderId]);
 
   const shouldDisableTextField = isSubmitting;
   const shouldDisableButton = isSubmitting;
@@ -87,8 +113,6 @@ const Form: FC<FormProps> = ({ className }) => {
     charLimit?: number,
     isEmail?: boolean
   ) => {
-    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     const emailError = isEmail ? !emailRegex.test(value) : false;
     const charCountError = charLimit
       ? !value.trim() || value.length > charLimit
@@ -107,6 +131,13 @@ const Form: FC<FormProps> = ({ className }) => {
 
     if (!orderId.trim()) {
       setOrderIdError(true);
+      isValid = false;
+    } else {
+      setOrderIdError(false);
+    }
+
+    if (!email.trim() || !emailRegex.test(email)) {
+      setEmailError(true);
       isValid = false;
     } else {
       setOrderIdError(false);
@@ -147,7 +178,14 @@ const Form: FC<FormProps> = ({ className }) => {
       setRelationshipError(false);
     }
 
-    if (!message.trim() || message.trim().length > CHAR_LIMIT) {
+    if (!redeemId.trim()) {
+      setRedeemIdError(true);
+      isValid = false;
+    } else {
+      setRedeemIdError(false);
+    }
+
+    if (!message.trim() || message.trim().length > MSG_CHAR_LIMIT) {
       setMessageError(true);
       isValid = false;
     } else {
@@ -167,6 +205,7 @@ const Form: FC<FormProps> = ({ className }) => {
     const content = {
       orderId,
       email,
+      redeemId,
       customerFirstName,
       customerLastName,
       recipientFirstName,
@@ -177,18 +216,44 @@ const Form: FC<FormProps> = ({ className }) => {
     };
 
     setIsSubmitting(true);
-    const submissionSuccess = await writeOrderDoc(content);
+    const { data: submissionSuccess, error } = await writeCustomizationDoc(
+      content
+    );
     setIsSubmitting(false);
-    setSubmissionError(!submissionSuccess);
+    setSubmissionError(
+      submissionSuccess
+        ? ""
+        : error ??
+            `Sorry, there's an unknown error while submitting, please try
+    again!`
+    );
   };
 
   const handleGoBack = () => {
     setIsPreviewing(false);
   };
 
+  const getRedeemIdFromInput = (value: string) => {
+    const stringWithDashes = value.replace(/\s/g, "-");
+    const encodedString = encodeURIComponent(stringWithDashes.trim());
+    return encodedString;
+  };
+
+  const redeemIdHelperText = (): string => {
+    if (!redeemId) {
+      return "An custom id of your choice. This will be embedded in the link that you send your recipient.";
+    } else if (redeemIdError) {
+      return "Required & Cannot exceed 100 characters";
+    } else if (redeemIdExistError) {
+      return `The Redeem Id ${redeemId} already exist`;
+    } else {
+      return `An custom id of your choice. Your recipient will redeem the video gift at: orders.sigmareels.com/redeem/${redeemId}`;
+    }
+  };
+
   if (isPreviewing) {
     return (
-      <CelebrationDemo
+      <CelebrationMain
         recipientName={recipientFirstName}
         customerName={customerFirstName}
         occasion={occasion}
@@ -202,6 +267,14 @@ const Form: FC<FormProps> = ({ className }) => {
   return (
     <div className={className}>
       <div className="container">
+        <div className="breadcrumb-container">
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link underline="hover" color="inherit" href="/">
+              Back
+            </Link>
+            <Typography color="text.primary">Customization Form</Typography>
+          </Breadcrumbs>
+        </div>
         <Stack className="form-wrapper" spacing={2} useFlexGap>
           <h2>Basic Info</h2>
           <TextField
@@ -303,7 +376,7 @@ const Form: FC<FormProps> = ({ className }) => {
             value={occasion}
             onChange={(e) => {
               setOccasion(e.target.value);
-              validateInput(e.target.value, setOccasionError, CHAR_LIMIT);
+              validateInput(e.target.value, setOccasionError, FIELD_CHAR_LIMIT);
             }}
             error={occasionError}
             helperText={
@@ -314,11 +387,11 @@ const Form: FC<FormProps> = ({ className }) => {
             required
           />
           <TextField
-            label="Describe your relationship with recipient"
+            label="Your relationship with recipient"
             value={relationship}
             onChange={(e) => {
               setRelationship(e.target.value);
-              validateInput(e.target.value, setRelationshipError, CHAR_LIMIT);
+              validateInput(e.target.value, setRelationshipError, FIELD_CHAR_LIMIT);
             }}
             error={relationshipError}
             helperText={
@@ -326,6 +399,24 @@ const Form: FC<FormProps> = ({ className }) => {
                 ? "Required  & Cannot exceed 100 characters"
                 : ""
             }
+            disabled={shouldDisableTextField}
+            fullWidth
+            required
+          />
+          <TextField
+            label="Redeem Id"
+            value={redeemId}
+            onChange={(e) => {
+              setRedeemId(getRedeemIdFromInput(e.target.value));
+              validateInput(
+                e.target.value,
+                setRedeemIdError,
+                MSG_CHAR_LIMIT,
+                false
+              );
+            }}
+            error={redeemIdError || redeemIdExistError}
+            helperText={redeemIdHelperText()}
             disabled={shouldDisableTextField}
             fullWidth
             required
@@ -343,7 +434,7 @@ const Form: FC<FormProps> = ({ className }) => {
             value={message}
             onChange={(e) => {
               setMessage(e.target.value);
-              validateInput(e.target.value, setMessageError, CHAR_LIMIT);
+              validateInput(e.target.value, setMessageError, MSG_CHAR_LIMIT);
             }}
             error={messageError}
             helperText={
@@ -370,7 +461,7 @@ const Form: FC<FormProps> = ({ className }) => {
           </Button>
           <div>
             {isSubmitting && <CircularProgress />}
-            {submissionError === false && (
+            {submissionError === "" && (
               <Stack direction="row" spacing={1}>
                 <CheckCircleIcon color="success" />
                 <Typography variant="h6" color="green">
@@ -378,19 +469,18 @@ const Form: FC<FormProps> = ({ className }) => {
                 </Typography>
               </Stack>
             )}
-            {submissionError === true && (
+            {submissionError && (
               <Stack direction="row" spacing={1}>
                 <ErrorIcon color="error" />
                 <Typography variant="h6" color="red">
-                  Sorry, there's an unknown error while submitting, please try
-                  again!
+                  {submissionError}
                 </Typography>
               </Stack>
             )}
           </div>
           <div>
             {capitalizeSentence(
-              "Note: if you've submitted with the same order id before, the new submission will override the old info"
+              "Note: if you submit a duplicate order id, the new submission will override the old info"
             )}
           </div>
         </Stack>
@@ -403,8 +493,8 @@ export default styled(Form)`
   .container {
     background: linear-gradient(
       to bottom right,
-      ${ThemeColor.BLUE_START},
-      ${ThemeColor.BLUE_END}
+      ${ThemeColor.CREAM},
+      ${ThemeColor.CREAM_END}
     );
     width: 100vw;
     min-height: 100vh;
@@ -424,6 +514,12 @@ export default styled(Form)`
 
   .text-right {
     text-align: right;
+  }
+
+  .breadcrumb-container {
+    position: fixed;
+    top: 5px;
+    left: 10px;
   }
 
   .heartbeat {

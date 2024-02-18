@@ -9,8 +9,8 @@ interface SvgProps {
 }
 
 export const OpenBook: FC<SvgProps> = ({ width, height, startColor, stopColor }) => {
-  const color1 = startColor ? startColor : ThemeColor.BLUE_START;
-  const color2 = stopColor ? stopColor : ThemeColor.BLUE_END;
+  const color1 = startColor ? startColor : ThemeColor.CREAM;
+  const color2 = stopColor ? stopColor : ThemeColor.CREAM_END;
 
   return (
     <svg

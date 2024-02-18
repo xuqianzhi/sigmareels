@@ -7,3 +7,11 @@
   font-family: protest-riot;
   src: url(../../../public/ProtestRiot.ttf);
 }
+
+.great-vibe-font {
+  font-family: great-vibe;
+}
+
+.protest-riot-font {
+  font-family: protest-riot;
+}
