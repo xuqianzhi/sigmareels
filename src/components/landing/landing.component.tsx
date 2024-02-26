@@ -31,13 +31,18 @@ const OptionPaper: FC<{
       }}
       elevation={hoveringPaper === name ? 10 : 1}
       onClick={onClick}
+      sx={{
+        background: "red",
+      }}
     >
       <Stack spacing={2}>
         <div className="icon-container">{icon}</div>
         <div className="text-wrapper" style={{ fontSize: "2vw" }}>
           {titleText}
         </div>
-        <div style={{ fontSize: "1.2vw", padding: '20px' }}>{descriptionText}</div>
+        <div style={{ fontSize: "1.2vw", padding: "20px" }}>
+          {descriptionText}
+        </div>
       </Stack>
     </Paper>
   );
@@ -49,9 +54,15 @@ const Landing: FC<LandingProps> = ({ className }) => {
 
   return (
     <div className={className}>
-      <div className="container">
+      <div className="center-container container">
         <Stack spacing={2}>
-          <div className="text-wrapper great-vibe-font heartbeat">Sigma Reels</div>
+          <div className="center-container">
+            <img
+              src={process.env.PUBLIC_URL + "/logo-dark.png"}
+              width="200px"
+              height="200px"
+            />
+          </div>
           <Stack direction="row" spacing={10}>
             <OptionPaper
               name="submit"
@@ -66,7 +77,9 @@ const Landing: FC<LandingProps> = ({ className }) => {
                   }}
                 />
               }
-              onClick={() => {navigate('/customize')}}
+              onClick={() => {
+                navigate("/customize");
+              }}
             />
             <OptionPaper
               name="redeem"
@@ -81,7 +94,9 @@ const Landing: FC<LandingProps> = ({ className }) => {
                   }}
                 />
               }
-              onClick={() => {navigate('/redeem')}}
+              onClick={() => {
+                navigate("/redeem");
+              }}
             />
           </Stack>
         </Stack>
@@ -98,6 +113,13 @@ export default styled(Landing)`
     align-items: center;
   }
 
+  .center-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
   .container {
     background: linear-gradient(
       to bottom right,
@@ -106,10 +128,6 @@ export default styled(Landing)`
     );
     width: 100vw;
     height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
   }
 
   .text-wrapper {
@@ -128,28 +146,6 @@ export default styled(Landing)`
     padding: 20px;
     border-radius: 15px;
     background-color: aliceblue;
-    margin-top: 20px
-  }
-
-  .heartbeat {
-    animation: heartbeat 3s infinite alternate;
-  }
-
-  @keyframes heartbeat {
-    0% {
-      transform: scale(1);
-    }
-    25% {
-      transform: scale(1.1);
-    }
-    50% {
-      transform: scale(1);
-    }
-    75% {
-      transform: scale(1.2);
-    }
-    100% {
-      transform: scale(1);
-    }
+    margin-top: 20px;
   }
 `;

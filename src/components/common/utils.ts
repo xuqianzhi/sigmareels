@@ -49,6 +49,7 @@ export function capitalizeSentence(sentence: string): string {
     "am",
     "being",
   ]);
+  if (!sentence) return "";
   const words: string[] = sentence.split(" ");
 
   for (let i = 0; i < words.length; i++) {

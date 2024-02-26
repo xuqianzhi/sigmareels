@@ -11,106 +11,35 @@ import { useParams } from "react-router-dom";
 import { getCustomizationDocFromRedeemId } from "@common/firestore";
 import { CustomizationDoc } from "@common/firestore.constants";
 import styled from "styled-components";
-import CircularProgress from "@mui/material/CircularProgress";
 import "@components/common/styles.css";
 
 interface CelebrationMainProps {
   className?: string;
-  recipientName?: string;
-  customerName?: string;
-  occasion?: string;
-  relationship?: string;
-  message?: string;
-  handleGoBack?: () => void;
+  orderId?: string;
+  error?: string;
+  recipientName: string;
+  customerName: string;
+  occasion: string;
+  relationship: string;
+  message: string;
 }
 
 const CelebrationMain: FC<CelebrationMainProps> = ({
   className,
-  recipientName: inputRecipientName,
-  customerName: inputCustomerName,
-  occasion: inputOccasion,
-  relationship: inputRelationship,
-  message: inputMessage,
-  handleGoBack,
+  recipientName,
+  customerName,
+  occasion,
+  relationship,
+  message,
+  orderId,
+  error,
 }) => {
-  const { redeemId } = useParams();
-
-  const [orderId, setOrderId] = useState<string>();
-  const [recipientName, setRecipientName] = useState<string>();
-  const [customerName, setCustomerName] = useState<string>();
-  const [occasion, setOccasion] = useState<string>();
-  const [relationship, setRelationship] = useState<string>();
-  const [message, setMessage] = useState<string>();
-
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>();
-
-  const fetchCustomizationDoc = async (redeemId: string) => {
-    setLoading(true);
-    const doc = await getCustomizationDocFromRedeemId(redeemId);
-    setLoading(false);
-    if (doc.error) {
-      setError(doc.error);
-      return;
-    }
-    const data = doc.data as CustomizationDoc;
-    setOrderId(data.orderId);
-    setRecipientName(data.recipientFirstName);
-    setCustomerName(data.customerFirstName);
-    setOccasion(data.occasion);
-    setRelationship(data.relationship);
-    setMessage(data.relationship);
-  };
-
-  useEffect(() => {
-    if (redeemId) {
-      fetchCustomizationDoc(redeemId);
-    } else {
-      setLoading(true);
-      setRecipientName(inputRecipientName ?? "ReeSiPoo");
-      setCustomerName(inputCustomerName ?? "jack");
-      setOccasion(inputOccasion ?? "birthday");
-      setRelationship(inputRelationship ?? "friend");
-      setMessage(
-        inputMessage ?? "happy birthday bro, you're the best, hope all is well!"
-      );
-      setLoading(false);
-    }
-  }, [
-    redeemId,
-    inputRecipientName,
-    inputCustomerName,
-    inputOccasion,
-    inputRelationship,
-    inputMessage,
-  ]);
-
   const { height: windowHeight } = useWindowSize();
 
   return (
     <div className={className}>
-      {loading && (
-        <div className="container">
-          <CircularProgress sx={{ color: ThemeColor.ORANGE }} />
-        </div>
-      )}
-      {!loading && !error && (
+      {!error && (
         <>
-          {handleGoBack && (
-            <Button
-              sx={{
-                position: "fixed",
-                top: 20,
-                left: 20,
-                zIndex: (theme) => theme.zIndex.drawer + 1,
-                backgroundColor: ThemeColor.ORANGE,
-              }}
-              variant="contained"
-              onClick={handleGoBack}
-            >
-              Back to form
-            </Button>
-          )}
           <Confetti startFrom={0} height={windowHeight * 2} />
           <Intro
             recipientName={recipientName}
@@ -123,16 +52,14 @@ const CelebrationMain: FC<CelebrationMainProps> = ({
           <VideoPlayer orderId={orderId} />
         </>
       )}
-      {!loading && error && (
+      {error && (
         <>
           <div className="main-container">
             <div
               className="error-text-wrapper protest-riot-font"
               style={{ fontSize: "3vw" }}
             >
-              <div>
-                Unfortunately, something went wrong
-              </div>
+              <div>Unfortunately, something went wrong</div>
               <div>We apologize for the inconvenience</div>
               <div>Please try again later</div>
               <div>Thanks!</div>

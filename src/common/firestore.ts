@@ -127,3 +127,23 @@ export const getVideoDownloadUrl = async (
     error: resJson.error,
   };
 };
+
+
+export const getOrderInformation = async (
+  orderId: string
+): Promise<FirestoreResponse> => {
+  const res = await fetch(ApiUrl.getOrderInformation(orderId), {
+    method: "get",
+  });
+  const resJson = await res.json();
+  if (res.status === 200) {
+    return {
+      data: resJson.data,
+      error: null,
+    };
+  }
+  return {
+    data: null,
+    error: resJson.error,
+  };
+};

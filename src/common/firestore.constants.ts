@@ -6,12 +6,14 @@ const getFilteredUrlSearchParam = (
   inputParams: Record<string, string>
 ): string => {
   const filteredParams = Object.entries(inputParams)
-  .filter(([key, value]) => value !== undefined)
-  .reduce((acc, [key, value]) => {
-    acc.append(key, value!); // Using ! to assert that value is not undefined
-    return acc;
-  }, new URLSearchParams());
-  return filteredParams.toString().length === 0 ? '' : `?${filteredParams.toString()}`;
+    .filter(([key, value]) => value !== undefined)
+    .reduce((acc, [key, value]) => {
+      acc.append(key, value!); // Using ! to assert that value is not undefined
+      return acc;
+    }, new URLSearchParams());
+  return filteredParams.toString().length === 0
+    ? ""
+    : `?${filteredParams.toString()}`;
 };
 
 export const ApiUrl = {
@@ -31,6 +33,10 @@ export const ApiUrl = {
     `https://us-central1-sigmareels-88.cloudfunctions.net/getVideoDownloadUrl${getFilteredUrlSearchParam(
       { orderId: orderId }
     )}`,
+  getOrderInformation: (orderId?: string) =>
+    `https://us-central1-sigmareels-88.cloudfunctions.net/getOrderInformation${getFilteredUrlSearchParam(
+      { orderId: orderId }
+    )}`,
 };
 
 export interface CustomizationDoc {
@@ -44,4 +50,15 @@ export interface CustomizationDoc {
   occasion: string;
   relationship: string;
   message: string;
+}
+
+export interface OrderInfo {
+  id: string;
+  customerName: string;
+  recipientName: string;
+  occasion: string;
+  relationship: string;
+  message: string;
+  imageUrl?: string;
+  marketingPermission: boolean;
 }

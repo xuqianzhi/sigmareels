@@ -259,7 +259,6 @@ const Form: FC<FormProps> = ({ className }) => {
         occasion={occasion}
         relationship={relationship}
         message={message}
-        handleGoBack={handleGoBack}
       />
     );
   }
