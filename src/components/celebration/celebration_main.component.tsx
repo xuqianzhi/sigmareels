@@ -2,14 +2,11 @@ import React, { FC, useEffect, useState } from "react";
 import CelebrationText from "@components/celebration/celebration_msg.component";
 import VideoIntro from "@components/celebration/video_intro.component";
 import Intro from "@components/celebration/intro.component";
-import Button from "@mui/material/Button";
 import { ThemeColor } from "@components/common/constants";
 import Confetti from "@components/common/confetti.component";
 import useWindowSize from "react-use/lib/useWindowSize";
 import VideoPlayer from "@components/celebration/video_player.component";
-import { useParams } from "react-router-dom";
-import { getCustomizationDocFromRedeemId } from "@common/firestore";
-import { CustomizationDoc } from "@common/firestore.constants";
+import CountDown from "@components/celebration/count_down.component";
 import styled from "styled-components";
 import "@components/common/styles.css";
 
@@ -35,7 +32,18 @@ const CelebrationMain: FC<CelebrationMainProps> = ({
   error,
 }) => {
   const { height: windowHeight } = useWindowSize();
+  const [showCountDown, setShowCountDown] = useState<boolean>(true);
 
+  if (showCountDown) {
+    return (
+      <CountDown
+        onCountdownEnd={() => {
+          setShowCountDown(false);
+        }}
+        startFrom={3}
+      />
+    );
+  }
   return (
     <div className={className}>
       {!error && (
