@@ -29,7 +29,7 @@ const CelebrationPreviewWrapper: FC = ({}) => {
       setCustomerName(data.customerName);
       setOccasion(data.occasion);
       setRelationship(data.relationship);
-      setMessage(data.relationship);
+      setMessage(data.message);
     }
   };
 

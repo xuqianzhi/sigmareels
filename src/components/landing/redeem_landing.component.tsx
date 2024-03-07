@@ -32,7 +32,6 @@ const Redeem: FC<RedeemProps> = ({ className }) => {
     } else {
       setOrderIdError(undefined);
       navigate(`/redeem/${orderId}`);
-
     }
   };
 
