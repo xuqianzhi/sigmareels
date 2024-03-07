@@ -43,7 +43,7 @@ const Intro: FC<IntroProps> = ({
             </div>
             <div>At This Special Occasion</div>
             <span>
-              <span>Your Dear {capitalizeSentence(relationship)} </span>
+              {/* <span>Your Dear {capitalizeSentence(relationship)} </span> */}
               <span className="great-vibe-font">
                 {capitalizeSentence(customerName)}
               </span>
